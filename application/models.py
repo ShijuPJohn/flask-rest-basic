@@ -3,9 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "user"
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
+    posts = db.relationship("Article", cascade="all,delete", backref="author")
 
 
 class Article(db.Model):
@@ -13,9 +14,4 @@ class Article(db.Model):
     article_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String)
     content = db.Column(db.String)
-
-
-class ArticleAuthors(db.Model):
-    __tablename__ = "article_authors"
-    article_id = db.Column(db.Integer, db.ForeignKey("article.article_id"), primary_key=True, nullable=False, )
-    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"), primary_key=True, nullable=False, )
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
